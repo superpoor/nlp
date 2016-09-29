@@ -1,59 +1,64 @@
-import xml.etree.ElementTree as ET
-from random import shuffle
 import json
+import re
+import xml.sax
+from HTMLParser import HTMLParser
 
-posts = {}
+MAX_THREADS = 100
+MAX_POSTS = 500
 
-def parse(path):
-  tree = ET.parse(path + "/Posts.xml")
-  root = tree.getroot()
+cnt_threads = 0
+cnt_posts = 0
 
-  for post in root:
-    if post.attrib["PostTypeId"] == "1":
-      id = int(post.attrib["Id"])
-      posts[id] = {
-        "id": id,
-        "content": post.attrib["Body"],
-        "answer": []
-      }
+posts = []
 
-  for post in root:
-    if post.attrib["PostTypeId"] == "2":
-      posts[int(post.attrib["ParentId"])]["answer"].append({
-        "id": post.attrib["Id"],
-        "content": post.attrib["Body"]
-      })
+def removeHtmlTag(s):
+  newS = re.sub('(<.*?>)|(</.*?>)', '', s) \
+    .replace("\n", " ", 1000000000) \
+    .replace("\r", " ", 1000000000)
+  return HTMLParser().unescape(newS) \
+    .replace(u'\xa0', ' ', 100000000)
 
-parse('android.stackexchange.com')
-posts2 = posts.values()
-#shuffle(posts2)
-out = posts2[0:200]
 
-with open('data.json', 'w') as outfile:
-  json.dump(out, outfile, indent=4)
+class TerminateError(xml.sax.SAXException):
+  def __init__(self, value):
+    self.value = value
 
-num_answer = {}
-words_cnt = 0
+  def __str__(self):
+    return repr(self.value)
 
-post_cnt = len(out)
-for post in out:
-  cnt = len(post["answer"])
-  post_cnt += cnt
-  num_answer[cnt] = num_answer.get(cnt, 0) + 1
-  words_cnt += len(post["content"].split(" "))
-  for answer in post["answer"]:
-    words_cnt += len(answer["content"].split(" "))
+class MyHandler( xml.sax.ContentHandler ):
+  def startElement(self, name, attrs):
+    global cnt_posts, cnt_threads
 
-print "Number of questions = " + len(out).__str__()
-print "Number of answers = " + post_cnt.__str__()
-cnt = 0
-for i in range(4):
-  cnt += num_answer.get(i, 0)
-  print "There are " + num_answer.get(i, 0).__str__() + " questions have " + i.__str__() + " answers, " + (num_answer.get(i, 0) / 2.0).__str__() + "% percentage"
+    if not name == "row":
+      return
+    if cnt_threads >= 100 and cnt_posts >= 500:
+      raise TerminateError("Reach enough threads and posts")
 
-print "There are " + (200 - cnt).__str__() + " questions have more than 3 answers, " + ((200 - cnt)/ 2.0).__str__() + "% percentage"
-print "Average of words in " + post_cnt.__str__() + " posts is " + (words_cnt / post_cnt).__str__()
+    posts.append({
+      "type": attrs["PostTypeId"],
+      "id": attrs["Id"],
+      "content": removeHtmlTag(attrs["Body"]),
+      "parentId": attrs.get("ParentId", -1)
+    })
 
+    cnt_posts += 1
+    if attrs["PostTypeId"] == "1":
+      cnt_threads += 1
+
+parser = xml.sax.make_parser()
+parser.setContentHandler(MyHandler())
+
+try:
+  parser.parse("Posts.xml")
+except TerminateError as e:
+  print e.__str__()
+
+with open('data.json', 'w') as out_file:
+  json.dump(posts, out_file, indent=4, encoding="utf8")
+
+print "Number of threads = " + cnt_threads.__str__()
+print "Number of posts = " + cnt_posts.__str__()
 
 
 
