@@ -1,6 +1,7 @@
 import json
 import re
 import xml.sax
+import sys
 from HTMLParser import HTMLParser
 
 MAX_THREADS = 100
@@ -50,7 +51,12 @@ parser = xml.sax.make_parser()
 parser.setContentHandler(MyHandler())
 
 try:
-  parser.parse("Posts.xml")
+  try: 
+    sourcefile = sys.argv[1]
+  except IndexError as e:
+    sourcefile = "Posts.xml"
+  print("Reading from " + sourcefile)
+  parser.parse(sourcefile)
 except TerminateError as e:
   print e.__str__()
 
@@ -59,9 +65,3 @@ with open('data.json', 'w') as out_file:
 
 print "Number of threads = " + cnt_threads.__str__()
 print "Number of posts = " + cnt_posts.__str__()
-
-
-
-
-
-
