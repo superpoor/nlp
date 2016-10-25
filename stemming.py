@@ -46,7 +46,7 @@ for stem in stem_cnt:
     stem_out += 1
     if stem_out >= 20: break
 
-print '******************************\nTop 20-most frequent stems: ' + most_fre_stem.__str__()
+print ('******************************\nTop 20-most frequent stems: ' + most_fre_stem.__str__())
 print str_out
 
 
