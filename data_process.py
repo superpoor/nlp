@@ -3,6 +3,7 @@ import re
 import xml.sax
 import sys
 from HTMLParser import HTMLParser
+import nltk
 
 MAX_THREADS = 100
 MAX_POSTS = 500
@@ -33,15 +34,10 @@ class MyHandler( xml.sax.ContentHandler ):
 
     if not name == "row":
       return
-    if cnt_threads >= 100 and cnt_posts >= 500:
+    if cnt_threads >= MAX_THREADS and cnt_posts >= MAX_POSTS:
       raise TerminateError("Reach enough threads and posts")
 
-    posts.append({
-      "type": attrs["PostTypeId"],
-      "id": attrs["Id"],
-      "content": removeHtmlTag(attrs["Body"]),
-      "parentId": attrs.get("ParentId", -1)
-    })
+    posts.append(removeHtmlTag(attrs["Body"]))
 
     cnt_posts += 1
     if attrs["PostTypeId"] == "1":

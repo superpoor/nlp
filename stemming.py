@@ -1,14 +1,12 @@
-from nltk.stem.snowball import EnglishStemmer
 import nltk
 import json
 import re
 
-posts = json.load(open("data2.json"))
+posts = json.load(open("data.json"))
 stop_word = ['a', 'the', 'of', 'and']
-stemmer = EnglishStemmer()
+stemmer = nltk.stem.porter.PorterStemmer()
 word_cnt = 0
 stem_dict = {}
-
 
 def compute(s):
   global word_cnt
@@ -24,9 +22,7 @@ def compute(s):
 
 # compute stem_dict
 for post in posts:
-  compute(post["content"])
-  for answer in post["answer"]:
-    compute(answer)
+  compute(post)
 
 # compute stem_cnt: list of stem with corresponding number of words of this stem
 stem_cnt = []

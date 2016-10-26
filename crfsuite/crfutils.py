@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 A miscellaneous utility for sequential labeling.
 Copyright 2010,2011 Naoaki Okazaki.
@@ -13,19 +15,25 @@ def apply_templates(X, templates):
     where name and offset specify a field name and offset from which
     the template extracts a feature value. Generated features are stored
     in the 'F' field of each item in the sequence.
+<<<<<<< HEAD
 
+=======
+>>>>>>> e94c2cb11cb2b736d649ee849f4ebfe827ce7ed0
     @type   X:      list of mapping objects
     @param  X:      The item sequence.
     @type   template:   tuple of (str, int)
     @param  template:   The feature template.
-    """
+    """ 
+    x_range = list(range(len(X)))
+    x_range_set = set(x_range)
+
     for template in templates:
         name = '|'.join(['%s[%d]' % (f, o) for f, o in template])
-        for t in range(len(X)):
+        for t in x_range:
             values = []
             for field, offset in template:
                 p = t + offset
-                if p not in range(len(X)):
+                if p not in x_range_set:
                     values = []
                     break
                 values.append(X[p][field])
@@ -41,7 +49,10 @@ def readiter(fi, names, sep=' '):
     L{sep}. Separated values of the item are named by L{names},
     and stored in a mapping object. Every item has a field 'F' that
     is reserved for storing features.
+<<<<<<< HEAD
 
+=======
+>>>>>>> e94c2cb11cb2b736d649ee849f4ebfe827ce7ed0
     @type   fi:     file
     @param  fi:     The file object.
     @type   names:  tuple
@@ -70,7 +81,10 @@ def readiter(fi, names, sep=' '):
 def escape(src):
     """
     Escape colon characters from feature names.
+<<<<<<< HEAD
 
+=======
+>>>>>>> e94c2cb11cb2b736d649ee849f4ebfe827ce7ed0
     @type   src:    str
     @param  src:    A feature name
     @rtype          str
@@ -83,7 +97,10 @@ def output_features(fo, X, field=''):
     Output features (and reference labels) of a sequence in CRFSuite
     format. For each item in the sequence, this function writes a
     reference label (if L{field} is a non-empty string) and features.
+<<<<<<< HEAD
 
+=======
+>>>>>>> e94c2cb11cb2b736d649ee849f4ebfe827ce7ed0
     @type   fo:     file
     @param  fo:     The file object.
     @type   X:      list of mapping objects
@@ -106,7 +123,10 @@ def to_crfsuite(X):
     """
     Convert an item sequence into an object compatible with crfsuite
     Python module.
+<<<<<<< HEAD
 
+=======
+>>>>>>> e94c2cb11cb2b736d649ee849f4ebfe827ce7ed0
     @type   X:      list of mapping objects
     @param  X:      The sequence.
     @rtype          crfsuite.ItemSequence
@@ -155,7 +175,11 @@ attributes, this utility tags the input data when a model file is specified by
     F = options.fields.split(' ')
 
     if not options.model:
+<<<<<<< HEAD
         # The generator function readiter() reads a sequence from a 
+=======
+        # The generator function readiter() reads a sequence from a
+>>>>>>> e94c2cb11cb2b736d649ee849f4ebfe827ce7ed0
         for X in readiter(fi, F, options.separator):
             feature_extractor(X)
             output_features(fo, X, 'y')
