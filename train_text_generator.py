@@ -29,6 +29,7 @@ def main():
                     tagged = nltk.pos_tag(tokens)
                     for tag in tagged:
                         logging.info(tag[0] + ' ' + tag[1])
+                        # TODO: add rules to define structure of the sentence
                         try:
                             output.write(tag[0] + ' ' + tag[1] + '\n')
                         except UnicodeEncodeError as e:
