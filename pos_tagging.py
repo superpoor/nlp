@@ -19,4 +19,3 @@ for s in sentences:
   tokens = nltk.word_tokenize(s)
   tagged = nltk.pos_tag(tokens)
   print tagged
-
