@@ -16,7 +16,7 @@ def main():
         with open('test.txt', 'w') as output:
             for post in data:
                 # if post_count > 50:
-                if sentence_count > 5:
+                if sentence_count > 100:
                     break
                 # post_count += 1
                 logging.info('*******************************************')
