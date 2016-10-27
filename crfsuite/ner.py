@@ -267,4 +267,8 @@ def feature_extractor(X):
         X[-1]['F'].append('__EOS__')
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     crfutils.main(feature_extractor, fields=fields, sep=separator)
+=======
+    crfutils.main(feature_extractor, fields=fields, sep=separator)
+>>>>>>> 3af3114be76c731c034f4ea3a38e3c752d659608
