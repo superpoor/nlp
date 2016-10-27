@@ -12,14 +12,17 @@ sentences = [
   'If no such object exists, the map should be "wrapped" using the Collections.synchronizedMap method.'
 ]
 
-for s in sentences:
-  tokens = nltk.word_tokenize(s)
-  pos_tag = nltk.pos_tag(tokens)
-  chunk_tag = chktagger.tag(tokens)
-  #print chunk_tag
+with open('train.txt', 'w') as f:
+  for s in sentences:
+    tokens = nltk.word_tokenize(s)
+    pos_tag = nltk.pos_tag(tokens)
+    chunk_tag = chktagger.tag(tokens)
+    #print chunk_tag
 
-  for index, token in enumerate(tokens):
-    print 'O %s %s %s' % ( token, pos_tag[index][1], chunk_tag[index][1] )
+    for index, token in enumerate(tokens):
+      f.write('O %s %s %s \n' % ( token, pos_tag[index][1], chunk_tag[index][1] ))
 
-  print
+    f.write('\n')
+
+  f.write('\n')
 
